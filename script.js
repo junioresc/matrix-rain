@@ -15,7 +15,6 @@ class Symbol {
     }
     draw(context) {
         this.text = this.characters.charAt(Math.floor(Math.random()*this.characters.length));
-        context.fillStyle = '#0aff0a';
         context.fillText(this.text, this.x * this.fontSize, this.y * this.fontSize);
         // If the letters get to the bottom of the screen then reset them to the top, the last condition causes the small difference of position on the screen
         if (this.y * this.fontSize > this.canvasHeight && Math.random() > 0.98) {
@@ -41,6 +40,13 @@ class Effect {
             this.symbols[i] = new Symbol(i, 0, this.fontSize, this.canvasHeight);
         }
     }
+    resize(width, height) {
+        this.canvasWidth = width;
+        this.canvasHeight = height;
+        this.columns = this.canvasWidth / this.fontSize;
+        this.symbols = [];
+        this.#initialize();
+    }
 }
 
 const effect = new Effect(canvas.width, canvas.height);
@@ -59,6 +65,7 @@ const animate = (timeStamp) => {
         ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
         ctx.textAlign = 'center';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#0aff0a';
         ctx.font = effect.fontSize + 'px monospace';
         effect.symbols.forEach(symbol => symbol.draw(ctx));
         timer = 0;
@@ -69,3 +76,9 @@ const animate = (timeStamp) => {
 }
 
 animate(0);
+
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    effect.resize(canvas.width, canvas.height);
+});

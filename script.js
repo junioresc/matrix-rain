@@ -17,8 +17,8 @@ class Symbol {
         this.text = this.characters.charAt(Math.floor(Math.random()*this.characters.length));
         context.fillStyle = '#0aff0a';
         context.fillText(this.text, this.x * this.fontSize, this.y * this.fontSize);
-        // If the letters get to the bottom of the screen then reset them to the top
-        if (this.y * this.fontSize > this.canvasHeight) {
+        // If the letters get to the bottom of the screen then reset them to the top, the last condition causes the small difference of position on the screen
+        if (this.y * this.fontSize > this.canvasHeight && Math.random() > 0.98) {
             this.y = 0;
         } else {
             this.y += 1;
@@ -44,11 +44,28 @@ class Effect {
 }
 
 const effect = new Effect(canvas.width, canvas.height);
+// Storing last time so that we can compare it with current timestamp on runtime to calculate delta time
+let lastTime = 0;
+const fps = 27;
+// Amount of time we wait before animating next fame, 1000ms divided by the frame rate
+const nextFrame = 1000/fps;
+let timer = 0;
 
-const animate = () => {
-    ctx.font = effect.fontSize + 'px monospace';
-    effect.symbols.forEach(symbol => symbol.draw(ctx));
+const animate = (timeStamp) => {
+    // Delta time is the difference in milliseconds from previous frame to the current frame
+    const deltaTime = timeStamp - lastTime;
+    lastTime = timeStamp;
+    if (timer > nextFrame) {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.textAlign = 'center';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.font = effect.fontSize + 'px monospace';
+        effect.symbols.forEach(symbol => symbol.draw(ctx));
+        timer = 0;
+    } else {
+        timer += deltaTime;
+    }
     requestAnimationFrame(animate);
 }
 
-animate();
+animate(0);

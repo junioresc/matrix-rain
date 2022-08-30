@@ -3,6 +3,13 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+// Radial Gradient creates a circle within in a circle and what ever is between both circles is colored, first 3 values is the inside circle, second 3 values are the bigger outside circle
+let gradient = ctx.createRadialGradient(canvas.width / 2, canvas.height / 2, 100, canvas.width / 2, canvas.height / 2, canvas.width / 2);
+gradient.addColorStop(0, 'red');
+gradient.addColorStop(0.4, 'green');
+gradient.addColorStop(0.6, 'cyan');
+gradient.addColorStop(1, 'magenta');
+
 // Used to create and draw individual symbols on the screen that make up the rain effect.
 class Symbol {
     constructor(x, y, fontSize, canvasHeight) {
@@ -65,7 +72,7 @@ const animate = (timeStamp) => {
         ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
         ctx.textAlign = 'center';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#0aff0a';
+        ctx.fillStyle = gradient;
         ctx.font = effect.fontSize + 'px monospace';
         effect.symbols.forEach(symbol => symbol.draw(ctx));
         timer = 0;
@@ -81,4 +88,9 @@ window.addEventListener('resize', () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     effect.resize(canvas.width, canvas.height);
+    gradient = ctx.createRadialGradient(canvas.width / 2, canvas.height / 2, 100, canvas.width / 2, canvas.height / 2, canvas.width / 2);
+    gradient.addColorStop(0, 'red');
+    gradient.addColorStop(0.4, 'green');
+    gradient.addColorStop(0.6, 'cyan');
+    gradient.addColorStop(1, 'magenta');
 });
